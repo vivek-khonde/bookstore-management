@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index}">    
+<head>
+<meta charset="ISO-8859-1">
+<title>Available User</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<section layout:fragment="content">
+	<div class="container mt-4">
+    <h2 class="mb-4">User Table</h2>
+	<table class="table table-bordered table-striped table-hover ">
+  <thead class="table table-dark">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Phone No</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="user :${user}">
+    	 <td th:text="${user.id}"></td>
+    	 <td th:text="${user.name}"></td>
+    	  <td th:text="${user.phoneno}"></td>
+    	   <td th:text="${user.email}"></td>
+    	    <td th:text="${user.role}"></td>
+    	    <td>
+      		<a style="color: #dc3545" th:href="@{/deleteUser/{id}(id=${user.id})}"><i class="fa-solid fa-trash ms-5"></i></a>
+    	    </td>
+    </tr>
+  </tbody>
+</table>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</div>
+</section>
+</html>

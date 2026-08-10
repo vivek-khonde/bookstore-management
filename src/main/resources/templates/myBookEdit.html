@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index}">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Edit Book Here</title>
+</head>
+
+<section layout:fragment="content">
+    <div class="container mt-5" style="max-width: 500px;">
+        <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-header text-center">
+                <p class="fs-4 mb-0">Edit Your Book Here</p>
+            </div>
+
+            <div class="card-body">
+            
+            <!-- ✅ Success and Error Messages -->
+            <div class="card-body">
+                <div th:if="${successMsg}" class="alert alert-success text-center" th:text="${successMsg}"></div>
+                <div th:if="${errorMsg}" class="alert alert-danger text-center" th:text="${errorMsg}"></div>
+            
+            
+                <form th:action="@{/saveMyBooks}" th:object="${myBookList}" method="post">
+                     <input type="hidden" th:field="*{id}" />
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" th:field="*{name}" placeholder="Enter book name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Author</label>
+                        <input type="text" class="form-control" th:field="*{author}" placeholder="Enter author" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" class="form-control" th:field="*{price}" placeholder="Enter price" required maxlength="6">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" th:field="*{description}" placeholder="Enter description" required>
+                    </div>
+                    <button type="submit" class="btn w-100 mt-m" style="background-color: #6610f2; color: white;">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>

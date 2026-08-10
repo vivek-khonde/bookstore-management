@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{index}">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Order</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<section layout:fragment="content">
+<div class="container mt-5" style="max-width: 500px;">
+        <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-header text-center">
+                <p class="fs-4 mb-0">Place Order</p>
+            </div>
+            <div class="card-body">
+        <form th:action="@{/createOrder}" th:object="${order}" method="post">
+         <input type="hidden" th:field="*{orderId}" />
+            <!-- User selection -->
+            <div class="mb-3">
+                <label for="user" class="form-label">Select User</label>
+                <select class="form-select" id="user" name="userId">
+                    <option value="">--Select User--</option>
+                    <option th:each="user : ${users}"
+                            th:value="${user.id}"
+                            th:text="${user.name}"></option>
+                </select>
+            </div>
+
+            <!-- Books selection -->
+            <div class="mb-3">
+                <label class="form-label">Select Books</label>
+                <div id="booksDiv">
+                    <!-- Books checkboxes will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Total Price -->
+            <div class="mb-3">
+                <label class="form-label">Total Price</label>
+                <input type="text" id="totalPrice" name="totalPrice" class="form-control" readonly>
+            </div>
+
+            <!-- Shipping Option -->
+            <div class="mb-3">
+                <label class="form-label">Shipping Option</label>
+                <select class="form-select" name="shippingOption" id="shippingOption">
+                    <option value="Standard" data-shipping-cost="5">Standard</option>
+                    <option value="Express" data-shipping-cost="15">Express</option>
+                </select>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn w-100 mt-m" style="background-color: #6610f2; color: white;">Place order</button>
+        </form>
+    </div>
+    </div>
+    </div>
+    
+
+    <script>
+        $(document).ready(function() {
+            // When a user is selected
+            $('#user').change(function() {
+                let userId = $(this).val();
+                if (userId) {
+                    // Load books for that user
+                    $.ajax({
+                        url: '/getBooks',
+                        type: 'GET',
+                        data: {userId: userId},
+                        success: function(books) {
+                            let html = '';
+                            let total = 0;
+                            books.forEach(function(book) {
+                                html += '<div class="form-check">';
+                                html += '<input class="form-check-input bookCheckbox" type="checkbox" name="bookIds" value="'+book.id+'" data-price="'+book.price+'">';
+                                html += '<label class="form-check-label">'+book.name+' (₹'+book.price+')</label>';
+                                html += '</div>';
+                            });
+                            $('#booksDiv').html(html);
+                            $('#totalPrice').val('0');
+                        }
+                    });
+                } else {
+                    $('#booksDiv').html('');
+                    $('#totalPrice').val('');
+                }
+            });
+
+            // Recalculate total price when books are checked or unchecked
+            $(document).on('change', '.bookCheckbox', function() {
+                let total = 0;
+                $('.bookCheckbox:checked').each(function() {
+                    total += parseFloat($(this).data('price'));
+                });
+                updateTotalPrice(total); // Update total with shipping cost
+            });
+
+            // Recalculate total price when shipping option changes
+            $('#shippingOption').change(function() {
+                let total = 0;
+                $('.bookCheckbox:checked').each(function() {
+                    total += parseFloat($(this).data('price'));
+                });
+                updateTotalPrice(total); // Update total with shipping cost
+            });
+
+            // Function to update total price with shipping cost
+            function updateTotalPrice(bookTotal) {
+                let shippingCost = parseFloat($('#shippingOption option:selected').data('shipping-cost'));
+                let finalTotal = bookTotal + shippingCost;
+                $('#totalPrice').val(finalTotal.toFixed(2)); // Update total price display
+            }
+        });
+    </script>
+</section>
+</html>
